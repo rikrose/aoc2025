@@ -1,21 +1,25 @@
-import { Context, Effect, Layer, LayerMap, Match } from "effect";
+import { Context, Effect, Layer, LayerMap, Schema } from "effect";
 import {
   RequestError,
   type CalculationError,
   type DataParseError,
 } from "./errors";
-import type { AnswerData, RequestData } from "./schema";
+import {
+  type AnswerData,
+  DayAndPart,
+  NextRequestBody,
+  parseDay,
+  parsePart,
+  RequestData,
+} from "./schema";
 
-import { Day1, day1ProviderLayer } from "./solutions/day1";
-import { assertUnreachable } from "@/lib/assert-unreachable";
+import { Day1 } from "./solutions/day1";
 
 export interface SolutionShape {
-  readonly part1: (
-    input: RequestData,
-  ) => Effect.Effect<AnswerData, DataParseError | CalculationError>;
-  readonly part2: (
-    input: RequestData,
-  ) => Effect.Effect<AnswerData, DataParseError | CalculationError>;
+  readonly solve: () => Effect.Effect<
+    AnswerData,
+    DataParseError | CalculationError
+  >;
 }
 
 export class SolutionProvider extends Context.Tag("SolutionProvider")<
@@ -26,53 +30,41 @@ export class SolutionProvider extends Context.Tag("SolutionProvider")<
 export class SolutionProviderMap extends LayerMap.Service<SolutionProviderMap>()(
   "SolutionProviderMap",
   {
-    layers: {
-      day1: day1ProviderLayer /*
-      day2: day1ProviderLayer,
-      day3: day1ProviderLayer,
-      day4: day1ProviderLayer,
-      day5: day1ProviderLayer,
-      day6: day1ProviderLayer,
-      day7: day1ProviderLayer,
-      day8: day1ProviderLayer,
-      day9: day1ProviderLayer,
-      day10: day1ProviderLayer,
-      day11: day1ProviderLayer,
-      day12: day1ProviderLayer, */,
+    lookup: (dayAndPart: DayAndPart) => {
+      const layers = [Day1];
+
+      const parts = layers[dayAndPart.day - 1];
+      if (!parts)
+        return Layer.fail(new RequestError({ errorMessage: "Unknown day" }));
+      const layer = parts[dayAndPart.part - 1];
+      if (!layer)
+        return Layer.fail(new RequestError({ errorMessage: "Unknown part" }));
+
+      return layer;
     },
   },
 ) {}
-type AvailableDays = "1" /*
-  | "2"
-  | "3"
-  | "4"
-  | "5"
-  | "6"
-  | "7"
-  | "8"
-  | "9"
-  | "10"
-  | "11"
-  | "12" */;
-export type AvailableSolutions = `day${AvailableDays}`;
-export type AvailableParts = "part1" | "part2";
 
-const runSolver = Effect.fn("runSolver")(function* (input: RequestData) {
+const runSolver = Effect.gen(function* () {
   const provider = yield* SolutionProvider;
-  switch (input.part) {
-    case 1:
-      return yield* provider.part1(input);
-    case 2:
-      return yield* provider.part2(input);
-  }
+  return yield* provider.solve();
 });
 
-export const SolverLiveLayer = SolutionProviderMap.Default.pipe(
-  Layer.provide(Layer.succeed(Day1, {})),
-);
-
-export const runSolution = Effect.fn("main")(function* (input: RequestData) {
-  return yield* runSolver(input).pipe(
-    Effect.provide(SolutionProviderMap.get(input.day)),
+export const routeHandler = Effect.fn("main")(function* (
+  nextRequest: {
+    body: unknown;
+  },
+  ctx: { day: unknown; part: unknown },
+) {
+  const parsedBody = yield* Schema.decodeUnknown(NextRequestBody)(nextRequest);
+  const dayAndPart = new DayAndPart({
+    day: yield* parseDay(ctx.day),
+    part: yield* parsePart(ctx.part),
+  });
+  return yield* runSolver.pipe(
+    Effect.provide(SolutionProviderMap.get(dayAndPart)),
+    Effect.provideService(RequestData, { body: parsedBody.body }),
   );
-}, Effect.provide(SolverLiveLayer));
+});
+
+export const SolverLiveLayer = SolutionProviderMap.Default;
