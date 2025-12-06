@@ -18,7 +18,8 @@ import { Day1 } from "./solutions/day1";
 export interface SolutionShape {
   readonly solve: () => Effect.Effect<
     AnswerData,
-    DataParseError | CalculationError
+    DataParseError | CalculationError,
+    RequestData
   >;
 }
 
