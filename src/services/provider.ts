@@ -1,6 +1,6 @@
-import { Context, Effect } from "effect";
-import type { AnswerData, RequestData } from "./schema";
+import { Context, type Effect } from "effect";
 import type { CalculationError, DataParseError } from "./errors";
+import type { AnswerData, RequestData } from "./schema";
 
 export interface SolutionShape {
   readonly solve: () => Effect.Effect<

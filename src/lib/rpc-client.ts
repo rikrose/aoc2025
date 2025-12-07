@@ -3,7 +3,7 @@
 import { FetchHttpClient } from "@effect/platform";
 import { RpcClient, RpcSerialization } from "@effect/rpc";
 import { Effect, Layer } from "effect";
-import { GetSolutionPayload, SolutionAPI } from "@/services/api";
+import { type GetSolutionPayload, SolutionAPI } from "@/services/api";
 import type { AnswerData } from "@/services/schema";
 
 // Create the protocol layer for the client

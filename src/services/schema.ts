@@ -1,4 +1,4 @@
-import { Schema, type Array as EffectArray, Context } from "effect";
+import { Context, type Array as EffectArray, Schema } from "effect";
 
 export const Day = Schema.Number.pipe(
   Schema.between(1, 12),

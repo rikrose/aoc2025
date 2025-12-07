@@ -41,8 +41,7 @@ export default function Home() {
 
         <p className="text-muted-foreground text-sm max-w-md mx-auto font-terminal">
           <span className="text-terminal-green">&gt;</span> Select a day to
-          solve puzzles and collect{" "}
-          <span className="text-star-gold">*</span>
+          solve puzzles and collect <span className="text-star-gold">*</span>
           <span className="text-star-silver">*</span> stars
         </p>
       </div>

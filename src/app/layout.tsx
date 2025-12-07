@@ -22,14 +22,16 @@ function Starfield() {
         <div
           key={star.id}
           className="star"
-          style={{
-            left: star.left,
-            top: star.top,
-            width: `${star.size}px`,
-            height: `${star.size}px`,
-            "--duration": `${star.duration}s`,
-            "--delay": `${star.delay}s`,
-          } as React.CSSProperties}
+          style={
+            {
+              left: star.left,
+              top: star.top,
+              width: `${star.size}px`,
+              height: `${star.size}px`,
+              "--duration": `${star.duration}s`,
+              "--delay": `${star.delay}s`,
+            } as React.CSSProperties
+          }
         />
       ))}
     </div>

@@ -16,7 +16,7 @@ import { Dropzone, FileUpload } from "@/components/ui/file-upload";
 import { getSolution } from "@/lib/rpc-client";
 import { Day, Part } from "@/services/schema";
 
-export default function Page(props: PageProps<"/[day]/[part]">) {
+export default function Page(_props: PageProps<"/[day]/[part]">) {
   const [files, setFiles] = useState<File[]>([]);
   const [answer, setAnswer] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -184,7 +184,10 @@ export default function Page(props: PageProps<"/[day]/[part]">) {
                 </div>
                 <pre className="text-xs text-terminal-green font-terminal overflow-x-auto">
                   {inputPreview.map((line, i) => (
-                    <div key={i} className="flex">
+                    <div
+                      key={`line-${i}-${line.slice(0, 10)}`}
+                      className="flex"
+                    >
                       <span className="text-muted-foreground w-6 shrink-0">
                         {i + 1}
                       </span>
@@ -244,6 +247,7 @@ export default function Page(props: PageProps<"/[day]/[part]">) {
                   Copy this answer to adventofcode.com
                 </p>
                 <button
+                  type="button"
                   onClick={() => navigator.clipboard.writeText(answer)}
                   className="text-xs font-terminal text-terminal-green hover:text-star-gold transition-colors flex items-center gap-1"
                 >
