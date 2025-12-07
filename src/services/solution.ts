@@ -1,11 +1,7 @@
-import { Context, Effect, Layer, LayerMap, Schema } from "effect";
+import { Effect, Layer, LayerMap, Schema } from "effect";
+import { RequestError } from "./errors";
+import { SolutionProvider } from "./provider";
 import {
-  RequestError,
-  type CalculationError,
-  type DataParseError,
-} from "./errors";
-import {
-  type AnswerData,
   DayAndPart,
   NextRequestBody,
   parseDay,
@@ -15,17 +11,8 @@ import {
 
 import { Day1 } from "./solutions/day1";
 
-export interface SolutionShape {
-  readonly solve: () => Effect.Effect<
-    AnswerData,
-    DataParseError | CalculationError
-  >;
-}
-
-export class SolutionProvider extends Context.Tag("SolutionProvider")<
-  SolutionProvider,
-  SolutionShape
->() {}
+// Re-export for backwards compatibility
+export { SolutionProvider } from "./provider";
 
 export class SolutionProviderMap extends LayerMap.Service<SolutionProviderMap>()(
   "SolutionProviderMap",
