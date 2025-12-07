@@ -1,7 +1,12 @@
 import { Effect, Layer, LayerMap, Schema } from "effect";
-import { RequestError } from "./errors";
+import {
+  type CalculationError,
+  type DataParseError,
+  RequestError,
+} from "./errors";
 import { SolutionProvider } from "./provider";
 import {
+  type AnswerData,
   DayAndPart,
   NextRequestBody,
   parseDay,
@@ -17,11 +22,6 @@ export interface SolutionShape {
     DataParseError | CalculationError
   >;
 }
-
-export class SolutionProvider extends Context.Tag("SolutionProvider")<
-  SolutionProvider,
-  SolutionShape
->() {}
 
 export class SolutionProviderMap extends LayerMap.Service<SolutionProviderMap>()(
   "SolutionProviderMap",
