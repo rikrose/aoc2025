@@ -1,6 +1,6 @@
 import { Effect, Layer } from "effect";
+import { SolutionProvider } from "../provider";
 import { AnswerData, RequestData } from "../schema";
-import { SolutionProvider } from "../solution";
 
 const day1part1ProviderLayer = Layer.succeed(SolutionProvider, {
   solve: Effect.fn("day1part1")(function* () {
